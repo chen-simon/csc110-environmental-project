@@ -1,4 +1,3 @@
-import datetime
 import xlrd
 import csv
 from typing import Tuple, List, Dict
@@ -11,11 +10,12 @@ from typing import Tuple, List, Dict
 #
 
 
-def xlsx_to_data(filename: str) -> Dict[datetime.datetime, List[int]]:
+def xlsx_to_data(filename: str) -> Dict[int, List[int]]:
     """ Convert the xlsx file to usable data.
     """
     # ------------------------------------------------------ red list data has a date - 1996/1998 that cannot be stored as an int
     # ------------------------------------------------------ for now the dates are stored as strings
+    # TODO: use helper functions to convert keys into ints
     # opening workbook and accessing the 2nd sheet
     workbook = xlrd.open_workbook(filename)
     second_sheet = workbook.sheet_by_index(1)
@@ -40,7 +40,7 @@ def xlsx_to_data(filename: str) -> Dict[datetime.datetime, List[int]]:
     return data_so_far
 
 
-def csv_to_data(filename: str) -> Dict[datetime.datetime, float]:
+def csv_to_data(filename: str) -> Dict[int, float]:
     """ Convert the csv file to usable data.
     """
     # ------------------------------------------------------ temperature data is stored in yyyy-mm-dd format while natural disaster data stored in yyyy format
@@ -58,7 +58,10 @@ def csv_to_data(filename: str) -> Dict[datetime.datetime, float]:
     return data_so_far
 
 
-def str_to_date(string: str) -> datetime.datetime:
-    """ Convert str to datetime
+def date_remove_months(string: str) -> str:
+    """ Converts dates in the form "2020-05-30" to "2020"
+
+    Preconditions:
+        - the year has 4 digits
     """
-    # TODO: Implement your function here.
+    return string[0:4]
