@@ -1,5 +1,4 @@
-from datetime import datetime
-
+import datetime
 import xlrd
 import csv
 from typing import Tuple, List, Dict
@@ -9,9 +8,10 @@ from typing import Tuple, List, Dict
 # This is in the form of Tuple[datetime.datetime, List[Any]]
 # (start_year, [value1, value2, value3, value4])
 #
-# Each element in the list happens on the year later.
+#
 
-def xlsx_to_data(filename: str) -> Dict[str, List[int]]:
+
+def xlsx_to_data(filename: str) -> Dict[datetime.datetime, List[int]]:
     """ Convert the xlsx file to usable data.
     """
     # ------------------------------------------------------ red list data has a date - 1996/1998 that cannot be stored as an int
@@ -40,7 +40,7 @@ def xlsx_to_data(filename: str) -> Dict[str, List[int]]:
     return data_so_far
 
 
-def csv_to_data(filename: str) -> Dict[str, float]:
+def csv_to_data(filename: str) -> Dict[datetime.datetime, float]:
     """ Convert the csv file to usable data.
     """
     # ------------------------------------------------------ temperature data is stored in yyyy-mm-dd format while natural disaster data stored in yyyy format
@@ -56,3 +56,9 @@ def csv_to_data(filename: str) -> Dict[str, float]:
                 data_so_far[row[0]] = float(row[1])
 
     return data_so_far
+
+
+def str_to_date(string: str) -> datetime.datetime:
+    """ Convert str to datetime
+    """
+    # TODO: Implement your function here.
