@@ -1,7 +1,7 @@
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 
 
-def average_temperature_data(data: dict) -> None:
+def average_temperature_data(data: Dict[int, List[float]]) -> None:
     """ Calculate average temperature during each year. This function mutates the input data.
 
     The dictionary changes from the form Dict[int, List[float]] to Dict[int, float]
