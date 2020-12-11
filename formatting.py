@@ -13,21 +13,20 @@ def xlsx_to_data(filename: str) -> Dict[int, List[int]]:
     """
     # opening workbook and accessing the 2nd sheet
     workbook = xlrd.open_workbook(filename)
-    second_sheet = workbook.sheet_by_index(1)
-    num_rows = second_sheet.nrows
-    num_cols = second_sheet.ncols
+    sheet = workbook.sheet_by_index(1)
+    num_rows = sheet.nrows
+    num_cols = sheet.ncols
+
     # ACCUMULATOR: stores the data extracted from the xlsx file
     data_so_far = {}
-
-    # iterating through rows
     for i in range(3, num_rows):
         # determine if it is necessary for the corresponding value to be a list
         if num_cols > 2:
-            data_so_far[int(second_sheet.cell(i, 0).value)] = []
-        # iterating through columns
+            data_so_far[int(sheet.cell(i, 0).value)] = []
+
         for j in range(1, num_cols):
-            cell_value = second_sheet.cell(i, j).value
-            key = int(second_sheet.cell(i, 0).value)
+            cell_value = sheet.cell(i, j).value
+            key = int(sheet.cell(i, 0).value)
             # if the corresponding value is a list
             if num_cols > 2 and isinstance(cell_value, (int, float)):
                 data_so_far[key].append(cell_value)
