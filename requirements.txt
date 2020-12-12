@@ -7,3 +7,6 @@
 xlrd
 csv
 
+# GUI
+pygame
+pygame_gui

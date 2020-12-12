@@ -9,3 +9,4 @@ def average_temperature_data(data: Dict[int, List[float]]) -> None:
     """
     for key in data:
         data[key] = sum(data[key]) / len(data[key])
+
