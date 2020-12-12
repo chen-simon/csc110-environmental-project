@@ -1,6 +1,6 @@
 import xlrd
 import csv
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Any
 
 # Usable data
 #
@@ -8,7 +8,7 @@ from typing import Tuple, List, Dict
 # (start_year, [value1, value2, value3, value4])
 
 
-def xlsx_to_data(filename: str) -> dict:
+def xlsx_to_data(filename: str) -> Dict[int, Any]:
     """ Convert the xlsx file to usable data.
     """
     # opening workbook and accessing the 2nd sheet
@@ -37,7 +37,7 @@ def xlsx_to_data(filename: str) -> dict:
     return data_so_far
 
 
-def csv_to_data(filename: str) -> dict:
+def csv_to_data(filename: str) -> Dict[int, Any]:
     """ Convert the csv file to usable data.
     """
     with open(filename) as file:
@@ -74,7 +74,17 @@ def dict_to_list_of_tuples(values: Dict[int, float]) -> List[Tuple[int, float]]:
     return [(key, values[key]) for key in values]
 
 
-def convert_dict(data:dict) -> tuple:
+def dict_to_tuple_of_lists(data:dict) -> tuple:
+    """ Return a tuple of two lists. The first list contains the keys and the second list contains the corresponding values
+    """
     x_values = [key for key in data]
     y_values = [data[key] for key in data]
     return (x_values, y_values)
+
+
+def tuple_to_dict(data: tuple) -> Dict:
+    data_so_far = {}
+    for i in range(0, len(data[0])):
+        data_so_far[data[0][i]] = data[1][i]
+
+    return data_so_far

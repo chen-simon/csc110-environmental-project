@@ -1,9 +1,12 @@
-# CSC110 Fall 2020: Final Project Additional Libraries
-#
-# In addition to the course libraries, for this project, the following libraries
-# will be used:
+# CSC110 Fall 2020: Final Project Libraries
 
 # Data formatting
 xlrd
 csv
 
+# Plotting
+plotly
+
+# GUI
+pygame
+pygame_gui
