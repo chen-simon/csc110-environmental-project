@@ -53,14 +53,11 @@ interval_deltas = [0.1, 20, 10]
 
 
 def change_interval(textbox, interval):
-    textbox.kill()
-    textbox = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((25, 235), (180, 50)),
-                                            html_text=str(interval) + units[selected_dataset],
-                                            manager=manager)
+    textbox.html_text = str(interval) + units[selected_dataset]
+    textbox.rebuild()
 
 
 def deselect_datasets():
-    # temperature_button.
     temperature_button.unselect()
     disasters_button.unselect()
     co2_button.unselect()
