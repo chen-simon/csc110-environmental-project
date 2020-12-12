@@ -8,7 +8,7 @@ from typing import Tuple, List, Dict
 # (start_year, [value1, value2, value3, value4])
 
 
-def xlsx_to_data(filename: str) -> Dict[int, List[float]]:
+def xlsx_to_data(filename: str) -> dict:
     """ Convert the xlsx file to usable data.
     """
     # opening workbook and accessing the 2nd sheet
@@ -37,7 +37,7 @@ def xlsx_to_data(filename: str) -> Dict[int, List[float]]:
     return data_so_far
 
 
-def csv_to_data(filename: str) -> Dict[int, float]:
+def csv_to_data(filename: str) -> dict:
     """ Convert the csv file to usable data.
     """
     with open(filename) as file:
@@ -72,3 +72,9 @@ def dict_to_list_of_tuples(values: Dict[int, float]) -> List[Tuple[int, float]]:
     """ Return dictionary mapping of ints to floats into a list of tuples in the form (key, value)
     """
     return [(key, values[key]) for key in values]
+
+
+def convert_dict(data:dict) -> tuple:
+    x_values = [key for key in data]
+    y_values = [data[key] for key in data]
+    return (x_values, y_values)
