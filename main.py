@@ -18,3 +18,9 @@ def run() -> None:
     print(carbon_data)
     print(temperature_data)
     print(natural_disasters_data)
+
+
+def run_with_gui() -> None:
+    """ Runs with graphical interface
+    """
+    import interface

@@ -107,6 +107,9 @@ while is_running:
                     change_interval(increase_text, interval_increase)
 
                 # Generate Button
+                elif event.ui_element == plot_button:
+                    # PLOT... selected_dataset & interval_increase
+                    pass
 
         manager.process_events(event)
 
