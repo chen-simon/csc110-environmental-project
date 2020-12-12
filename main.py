@@ -27,44 +27,21 @@ def run_with_gui() -> None:
     import interface
 
 
-def plot_red_list(dataset: Dict[str, List[int]]) -> None:
-    """Create a plotly graph of the red list dataset
+def plot_datasets(dataset: List[Tuple[int, float]]) -> None:
+    """Create a plotly graph of all the datasets
+        Before running,
 
-        This function only works for the red list dataset.
+        Red List:
+                1. run 'add_red_list_species' function on data
+        Global Temperature:
+                1. run 'average_temperature_data'  on data
+
+        Afterwards,
+         all datasets must be put through 'dict_to_list_of_tuples' before this function.
     """
     # Create lists of usable values
-    xcoords = [int(x) for x in dataset.keys()]
-    ycoords = [tuple(x) for x in dataset.values()]
-
-    # Create a blank figure
-    fig = go.Figure()
-
-    # Add the given data
-    fig.add_trace(go.Scatter(x=xcoords, y=[ycoords[x][0] for x in range(len(ycoords))],
-                             mode='lines+markers', name='Vertebrates'))
-    fig.add_trace(go.Scatter(x=xcoords, y=[ycoords[x][1] for x in range(len(ycoords))],
-                             mode='lines+markers', name='Invertebrates'))
-    fig.add_trace(go.Scatter(x=xcoords, y=[ycoords[x][2] for x in range(len(ycoords))],
-                             mode='lines+markers', name='Plants'))
-    fig.add_trace(go.Scatter(x=[x for x in xcoords if x > 2002], y=[ycoords[x][3] for x in range(4, len(ycoords))],
-                             mode='lines+markers', name='Fungi &Protists'))
-    fig.update_layout(title='Species on the Red List up to 2019',
-                      xaxis_title='Years',
-                      yaxis_title='Number of Animals')
-
-    # Display the figure in a web browser.
-    fig.show()
-
-
-def plot_datasets(dataset: dict) -> None:
-    """Create a plotly graph of the carbon dioxide and natural disasters datasets
-
-        This function takes in a dictionary with one to one pairings only.
-        The dictionaries are created by using the functions in formatting.py
-    """
-    # Create lists of usable values
-    xcoords = [x for x in dataset.keys()]
-    ycoords = [x for x in dataset.values()]
+    xcoords = [dataset[x][0] for x in range(len(dataset))]
+    ycoords = [dataset[x][1] for x in range(len(dataset))]
 
     # Create a blank figure
     fig = go.Figure()
@@ -72,14 +49,10 @@ def plot_datasets(dataset: dict) -> None:
     # Add the given data
     fig.add_trace(go.Scatter(x=xcoords, y=ycoords,
                              mode='lines+markers', name='data'))
-    # Naming of axis and title
+    # Naming of axis and title - NOT ACCURATE NEED TO PASS IN NAME AND Y AXIS LABEL
     fig.update_layout(title='Raw Dataset',
                       xaxis_title='Years',
                       yaxis_title='Number of ______')
 
     # Display the figure in a web browser.
     fig.show()
-
-    # The global temperatures dataset needs a new function, similar to red list, as it is has multiple lines
-    # The names for the title and axis for the plot_datasets function are not accurate, that function could be
-    #       split into two identical ones with different names to fix it
