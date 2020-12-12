@@ -4,56 +4,87 @@ import pygame_gui
 pygame.init()
 
 pygame.display.set_caption('Climate Grapher')
-window_surface = pygame.display.set_mode((400, 500))
+window_surface = pygame.display.set_mode((450, 300))
 
-background = pygame.Surface((400, 500))
+background = pygame.Surface((450, 300))
 background.fill(pygame.Color('#CCCCCC'))
 
-manager = pygame_gui.UIManager((400, 500))
+manager = pygame_gui.UIManager((450, 300))
 
 # Dataset Buttons
-temperature_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 25), (350, 50)),
+temperature_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 25), (150, 50)),
                                                   text='Temperature',
                                                   manager=manager)
 
-disasters_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 85), (350, 50)),
+disasters_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 85), (150, 50)),
                                                 text='Natural Disasters',
                                                 manager=manager)
 
-co2_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 145), (350, 50)),
+co2_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 145), (150, 50)),
                                           text='CO2 levels',
                                           manager=manager)
 
-# Interval of Increases
-increase_text = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((25, 235), (180, 50)),
-                                              html_text='0.1°C',
+# Increase Boxes
+temperature_increase = pygame_gui.elements.UITextBox(
+    relative_rect=pygame.Rect((225, 25), (200, 50)),
+    html_text='+0.1°C',
+    manager=manager)
+
+disasters_increase = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((225, 85), (200, 50)),
+                                                   html_text='',
+                                                   manager=manager)
+
+co2_increase = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((225, 145), (200, 50)),
+                                             html_text='',
+                                             manager=manager)
+# Plus Minus Buttons
+temperature_plus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((175, 25), (50, 25)),
+                                                text='+',
+                                                manager=manager)
+
+temperature_minus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((175, 50), (50, 25)),
+                                                 text='-',
+                                                 manager=manager)
+
+disasters_plus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((175, 85), (50, 25)),
+                                              text='+',
                                               manager=manager)
 
-minus_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((215, 235), (75, 50)),
-                                            text='-',
-                                            manager=manager)
+disasters_minus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((175, 110), (50, 25)),
+                                               text='-',
+                                               manager=manager)
 
-plus_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((300, 235), (75, 50)),
-                                           text='+',
-                                           manager=manager)
+co2_plus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((175, 145), (50, 25)),
+                                        text='+',
+                                        manager=manager)
+
+co2_minus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((175, 170), (50, 25)),
+                                         text='-',
+                                         manager=manager)
 # Generate Button
-plot_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 325), (350, 150)),
+plot_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((25, 205), (400, 70)),
                                            text='Generate',
                                            manager=manager)
 
 clock = pygame.time.Clock()
 is_running = True
 
-selected_dataset = 0
-interval_increase = 0.1
+selected = [True, False, False]
+interval_increases = [0.1, 0, 0]
 temperature_button.select()
 
 units = ['°C', ' Disasters', ' ppm']
 interval_deltas = [0.1, 20, 10]
 
 
-def change_interval(textbox, interval):
-    textbox.html_text = str(interval) + units[selected_dataset]
+def change_interval(textbox, delta: float, dataset: int) -> None:
+    interval_increases[dataset] += delta
+    # Always round the Degrees Celsius
+    interval_increases[0] = round(interval_increases[0], 1)
+    value = str(interval_increases[dataset])
+    if value[0] != '-':
+        value = '+' + value
+    textbox.html_text = value + units[dataset]
     textbox.rebuild()
 
 
@@ -73,35 +104,51 @@ while is_running:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 # Dataset buttons
                 if event.ui_element == temperature_button:
-                    deselect_datasets()
-                    temperature_button.select()
-                    selected_dataset = 0
-                    interval_increase = 0.1
-                    change_interval(increase_text, interval_increase)
+                    if temperature_button.is_selected:
+                        temperature_button.unselect()
+                        temperature_increase.html_text = ''
+                        temperature_increase.rebuild()
+                    else:
+                        temperature_button.select()
+                        change_interval(temperature_increase, 0, 0)
                 elif event.ui_element == disasters_button:
-                    deselect_datasets()
-                    disasters_button.select()
-                    selected_dataset = 1
-                    interval_increase = 20
-                    change_interval(increase_text, interval_increase)
+                    if disasters_button.is_selected:
+                        disasters_button.unselect()
+                        disasters_increase.html_text = ''
+                        disasters_increase.rebuild()
+                    else:
+                        disasters_button.select()
+                        change_interval(disasters_increase, 0, 1)
                 elif event.ui_element == co2_button:
-                    deselect_datasets()
-                    co2_button.select()
-                    selected_dataset = 2
-                    interval_increase = 10
-                    change_interval(increase_text, interval_increase)
+                    if co2_button.is_selected:
+                        co2_button.unselect()
+                        co2_increase.html_text = ''
+                        co2_increase.rebuild()
+                    else:
+                        co2_button.select()
+                        change_interval(co2_increase, 0, 2)
 
                 # Plus minus interval buttons
-                elif event.ui_element == minus_button:
-                    interval_increase -= interval_deltas[selected_dataset]
-                    if selected_dataset == 0:
-                        interval_increase = round(interval_increase, 1)
-                    change_interval(increase_text, interval_increase)
-                elif event.ui_element == plus_button:
-                    interval_increase += interval_deltas[selected_dataset]
-                    if selected_dataset == 0:
-                        interval_increase = round(interval_increase, 1)
-                    change_interval(increase_text, interval_increase)
+                elif event.ui_element == temperature_plus:
+                    change_interval(temperature_increase, interval_deltas[0], 0)
+                    temperature_button.select()
+                elif event.ui_element == temperature_minus:
+                    change_interval(temperature_increase, -interval_deltas[0], 0)
+                    temperature_button.select()
+
+                elif event.ui_element == disasters_plus:
+                    change_interval(disasters_increase, interval_deltas[1], 1)
+                    disasters_button.select()
+                elif event.ui_element == disasters_minus:
+                    change_interval(disasters_increase, -interval_deltas[1], 1)
+                    disasters_button.select()
+
+                elif event.ui_element == co2_plus:
+                    change_interval(co2_increase, interval_deltas[2], 2)
+                    co2_button.select()
+                elif event.ui_element == co2_minus:
+                    change_interval(co2_increase, -interval_deltas[2], 2)
+                    co2_button.select()
 
                 # Generate Button
                 elif event.ui_element == plot_button:
