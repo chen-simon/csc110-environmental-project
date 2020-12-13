@@ -1,12 +1,14 @@
 import random
-
+from typing import List, Tuple
 import plotly
 from plotly.graph_objs import Figure
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-def plot_datasets(graph1_x_coords: list, y_coords: list, graph2_x_coords: list, a: float, b: float, x_max: float,
-                  x_min: float,
+
+def plot_datasets(year: List[int], red_list_y: List[int],
+                  other_datasets: List[Tuple[str, List[float]]],
+                  a: float, b: float, x_max: float, x_min: float,
                   new_point_x: list, new_point_y: list, sigma: float) -> None:
     """Create a plotly graph of the all the datasets apart from red list
         This function takes in a dictionary with one to one pairings only.
@@ -16,8 +18,8 @@ def plot_datasets(graph1_x_coords: list, y_coords: list, graph2_x_coords: list, 
     fig = make_subplots(rows=1, cols=2)
 
     # Add the given data
-    make_graph1(fig, graph1_x_coords, y_coords, graph2_x_coords, new_point_y, sigma)
-    make_graph2(fig, graph2_x_coords, y_coords, x_min, x_max, a, b, new_point_x, new_point_y, sigma)
+    make_graph1(fig, year, red_list_y, other_datasets, new_point_y, sigma)
+    make_graph2(fig, year, red_list_y, x_min, x_max, a, b, new_point_x, new_point_y, sigma)
 
     # Naming of axis and title
 
@@ -29,13 +31,16 @@ def plot_datasets(graph1_x_coords: list, y_coords: list, graph2_x_coords: list, 
     fig.show()
 
 
-def make_graph1(fig: Figure, graph1_x_coords: list, y_coords: list, graph2_x_coords: list, new_point_y: list,
+def make_graph1(fig: Figure, year: list, red_list_y: list,
+                other_datasets: List[Tuple[str, List[float]]], new_point_y: list,
                 sigma: float) -> None:
-    fig.add_trace(go.Scatter(x=graph1_x_coords, y=y_coords,
+
+    fig.add_trace(go.Scatter(x=year, y=red_list_y,
                              mode='lines+markers', name='data'), row=1, col=1)
 
-    fig.add_trace(go.Scatter(x=graph1_x_coords, y=graph2_x_coords,
-                             mode='lines+markers', name='data'), row=1, col=1)
+    for dataset in other_datasets:
+        fig.add_trace(go.Scatter(x=year, y=dataset[1],
+                      mode='lines+markers', name=dataset[0]), row=1, col=1)
 
     fig.add_trace(go.Scatter(x=[2020], y=new_point_y, mode='markers', name='Prediction Interval',
                              error_y=dict(type='constant', value=sigma)), row=1, col=1)
