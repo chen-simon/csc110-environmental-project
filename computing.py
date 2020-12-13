@@ -41,6 +41,8 @@ def simple_linear_regression(points: tuple) -> tuple:
 
 
 def same_year(data:tuple, temperature: bool):
+    """ Return a dataset the matches the years of the red list data -- bad implementation will fix later
+    """
     data_so_far = ([], [])
     for i in range(0, len(data[0])):
         if data[0][i] > 1995 and data[0][i] != 1997 and data[0][i] != 1999 and data[0][i] != 2001 and data[0][i] != 2005:
@@ -55,11 +57,30 @@ def same_year(data:tuple, temperature: bool):
 
 
 def predict_future_value(a: int, b: int, data: list, change: float) -> float:
+    """ Return the predicted value based on the simple linear regression
+    """
     return a + b *(data[-1] + change)
 
 
+def calculate_r_squared(x_values: list, y_values: list, a: float, b: float) -> float:
+    """Return the R squared value when the given points are modelled as the line y = a + bx.
+
+    points is a list of pairs of numbers: [(x_1, y_1), (x_2, y_2), ...]
+
+    Assume that:
+        - points is not empty and contains tuples
+        - each element of points is a tuple containing two floats
+    """
+    y_average = sum(y_values) / len(y_values)
+
+    s_tot = sum([(y_values[x] - y_average) ** 2 for x in range(0, len(y_values))])
+    s_res = sum([(y_values[x] - (a + b * x_values[x])) ** 2 for x in range(0, len(y_values))])
+
+    return 1 - s_res / s_tot
+
+
 def residuals(data: tuple, a: float, b: float) -> List[int]:
-    """ Calculate residual values.
+    """ Return the residual values of the linear regression.
     """
     nums_so_far = []
     for i in range(0, len(data[1])):
@@ -70,18 +91,22 @@ def residuals(data: tuple, a: float, b: float) -> List[int]:
 
 
 def residual_standard_deviation(residual_list: list):
+    """ Return the standard deviation of the residual values.
+    """
     squared_residuals = [residual ** 2 for residual in residual_list]
     standard_dev = math.sqrt(sum(squared_residuals) / (len(squared_residuals) - 2))
     return standard_dev
 
 
 def prediction_interval_sigma(standard_dev: float) -> float:
-    """ 80% prediction interval
+    """ Return the +- value of an 80% prediction interval.
     """
     return standard_dev * 1.28
 
 
 def multiple_regression(red_list_data: tuple, temp: tuple, carbon: tuple, natural: tuple):
+    """ Return the prediction of a multiple linear regression with three variables
+    """
     y = pandas.DataFrame(red_list_data[1])
     x = pandas.DataFrame(list(zip(temp[1], carbon[1], natural[1])))
     print(x)

@@ -1,39 +1,46 @@
-
 import formatting
 import computing
 import graphing
 from typing import *
 
 
-
 def run(selected: List[bool], interval_increases: List[float]) -> None:
+    """ Performs calculations based on input and produces a graph
+    """
     # Formatted data
     red_list_data = formatting.xlsx_to_data("data//red_list_data.xlsx")
     formatting.add_red_list_species(red_list_data)
     red_list_data = formatting.dict_to_tuple_of_lists(red_list_data)
 
+    # if one variable is changed, perform simple linear regression
     if selected.count(True) == 1:
-        if selected[0]:  # assuming only one is true
+        # temperature data
+        if selected[0]:
             temperature_data = formatting.csv_to_data("data//global_land_temperatures.csv")
             computing.average_temperature_data(temperature_data)
             comparison_data = formatting.dict_to_tuple_of_lists(temperature_data)
             computing.same_year(red_list_data, True)
             change = interval_increases[0]
+        # natural disasters data
         elif selected[1]:
             natural_disasters_data = formatting.csv_to_data("data//natural_disasters_data.csv")
             comparison_data = formatting.dict_to_tuple_of_lists(natural_disasters_data)
             change = interval_increases[1]
+        # carbon dioxide data
         else:
             carbon_data = formatting.xlsx_to_data("data//carbon_dioxide_concentrations.xlsx")
             comparison_data = formatting.dict_to_tuple_of_lists(carbon_data)
             change = interval_increases[2]
 
+        # make the dataset years match
         comparison_data = computing.same_year(comparison_data, False)
 
+        #
         years = red_list_data[0]
         dep_val = red_list_data[1]
         indep_val = comparison_data[1]
         a, b = computing.simple_linear_regression((indep_val, dep_val))
+        r_squared = computing.calculate_r_squared(indep_val, dep_val, a, b)
         future_value = computing.predict_future_value(a, b, indep_val, change)
         residuals = computing.residuals((indep_val, dep_val), a, b)
         standard_dev = computing.residual_standard_deviation(residuals)

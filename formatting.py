@@ -68,14 +68,9 @@ def add_red_list_species(data: Dict[int, list]) -> None:
         data[key] = sum(data[key])
 
 
-def dict_to_list_of_tuples(values: Dict[int, float]) -> List[Tuple[int, float]]:
-    """ Return dictionary mapping of ints to floats into a list of tuples in the form (key, value)
-    """
-    return [(key, values[key]) for key in values]
-
-
 def dict_to_tuple_of_lists(data: Dict[int, float]) -> Tuple[List[int], List[float]]:
-    """ Return a tuple of two lists. The first list contains the keys and the second list contains the corresponding values
+    """ Returns a tuple of two lists. The first list contains the years (the keys of the input dictionary) and the
+    second list contains the actual data values (the corresponding values of the input dictionary)
     """
     x_values = [key for key in data]
     y_values = [data[key] for key in data]
@@ -83,6 +78,8 @@ def dict_to_tuple_of_lists(data: Dict[int, float]) -> Tuple[List[int], List[floa
 
 
 def tuple_to_dict(data: Tuple[List[int], List[float]]) -> Dict[int, float]:
+    """ Return a mapping of years to the corresponding value.
+    """
     data_so_far = {}
     for i in range(0, len(data[0])):
         data_so_far[data[0][i]] = data[1][i]
