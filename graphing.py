@@ -9,7 +9,7 @@ from plotly.subplots import make_subplots
 def plot_datasets(year: List[int], red_list_y: List[float],
                   other_datasets: List[Tuple[str, List[float]]],
                   a: float, b: float, x_max: float, x_min: float,
-                  new_point_x: list, new_point_y: list, sigma: float) -> None:
+                  new_point_x: list, new_point_y: list, sigma: float, r_squared: float) -> None:
     """Create a plotly graph of the all the datasets apart from red list
         This function takes in a dictionary with one to one pairings only.
         The dictionaries are created by using the functions in formatting.py
@@ -20,11 +20,12 @@ def plot_datasets(year: List[int], red_list_y: List[float],
     # Add the given data
     make_graph1(fig, year, red_list_y, other_datasets, new_point_y, sigma)
     if len(other_datasets) == 1:
-        make_graph2(fig, other_datasets[0][1], red_list_y, x_min, x_max, a, b, new_point_x, new_point_y, sigma)
+        make_graph2(fig, other_datasets[0][1], red_list_y,
+                    x_min, x_max, a, b, new_point_x, new_point_y, sigma)
 
     # Naming of axis and title
 
-    fig.update_layout(title='Prediction',
+    fig.update_layout(title='R²',
                       xaxis_title='Year',
                       yaxis_title='Number of Threatened Species')
 
