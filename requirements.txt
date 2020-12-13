@@ -7,6 +7,10 @@ csv
 # Plotting
 plotly
 
+# ML
+sklearn
+pandas
+
 # GUI
 pygame
 pygame_gui
