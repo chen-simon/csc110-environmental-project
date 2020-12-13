@@ -42,7 +42,7 @@ def run(selected: List[bool], interval_increases: List[float]) -> None:
         new_point_y = [future_value]
         xmax = (indep_val[-1] + change) + 0.1 * (indep_val[-1] + change - indep_val[0])
         xmin = indep_val[0] - 0.1 * (indep_val[-1] - indep_val[0])
-        graphing.plot_datasets(years, dep_val, indep_val, a, b, xmax, xmin, new_point_x, new_point_y, sigma)
+        graphing.plot_datasets(years, dep_val, [('Temperature', indep_val)], a, b, xmax, xmin, new_point_x, new_point_y, sigma)
 
     # else:
     #     temperature_data, natural_disasters_data, carbon_data = [], [], []
