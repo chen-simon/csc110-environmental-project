@@ -115,23 +115,24 @@ def prediction_interval_sigma(standard_dev: float) -> float:
     return standard_dev * 1.28
 
 
-def multiple_regression2(red_list_data: tuple, dataset1: tuple, dataset2: tuple, change1: float, change2: float) -> float:
-    """ Return the prediction of a multiple linear regression with three variables
+def multiple_regression2(red_list_data: tuple, dataset1: tuple, dataset2: tuple, value1: float, value2: float) -> float:
+    """ Return the prediction of a multiple linear regression with two variables
     """
     y = pandas.DataFrame(red_list_data[1])
     x = pandas.DataFrame(list(zip(dataset1[1], dataset2[1])))
     linear_regression = LinearRegression()
     linear_regression.fit(x, y)
-    y_pred = linear_regression.predict([[dataset1[1][-1] + change1, dataset2[1][-1] + change2]])
+    y_pred = linear_regression.predict([[value1, value2]])
     return float(y_pred)
 
 
-def multiple_regression3(red_list_data: tuple, dataset1: tuple, dataset2: tuple, dataset3: tuple, change1: float, change2: float, change3: float) -> float:
+def multiple_regression3(red_list_data: tuple, dataset1: tuple, dataset2: tuple, dataset3: tuple, value1: float,
+                         value2: float, value3: float) -> float:
     """ Return the prediction of a multiple linear regression with three variables
     """
     y = pandas.DataFrame(red_list_data[1])
     x = pandas.DataFrame(list(zip(dataset1[1], dataset2[1], dataset3[1])))
     linear_regression = LinearRegression()
     linear_regression.fit(x, y)
-    y_pred = linear_regression.predict([[dataset1[1][-1] + change1, dataset2[1][-1] + change2, dataset3[1][-1] + change3]])
+    y_pred = linear_regression.predict([[value1, value2, value3]])
     return float(y_pred)

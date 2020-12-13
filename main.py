@@ -16,7 +16,6 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
     red_list_data = formatting.xlsx_to_data("data//red_list_data.xlsx")
     formatting.add_red_list_species(red_list_data)
 
-
     temperature_data = formatting.csv_to_data("data//global_land_temperatures.csv")
     computing.average_temperature_data(temperature_data)
 
@@ -40,12 +39,15 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
         if select_temp:
             comparison_data = temperature_data
             change = temp_change
+            label = 'Temperature'
         elif select_disasters:
             comparison_data = natural_disasters_data
             change = disasters_change
+            label = 'Number of Natural Disasters'
         else:  # carbon concentration data
             comparison_data = carbon_data
             change = carbon_change
+            label = 'Carbon Dioxide Concentration'
 
         # all calculations for regression + graphing purposes
         dep_val = red_list_data[1]
@@ -63,28 +65,45 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
         xmin = indep_val[0] - 0.1 * (indep_val[-1] - indep_val[0])
         # temperature? - ignore for now -
         # graph the data
-        graphing.plot_datasets(years, dep_val, [('Temperature', indep_val)], a, b, xmax, xmin, new_point_x, new_point_y, sigma, r_squared)
+        graphing.plot_datasets(years, dep_val, [(label, indep_val, indep_val[-1] + change)], a, b, xmax, xmin, new_point_x, new_point_y,
+                               sigma, r_squared)
 
     # for multiple regression
     else:
+        carbon_value = carbon_data[1][-1] + carbon_change
+        temp_value = temperature_data[1][-1] + temp_change
+        disasters_value = natural_disasters_data[1][-1] + disasters_change
         # based on which variables user selected
-        if select_temp and select_disasters:
-            future_value = computing.multiple_regression2(red_list_data, temperature_data,
-                                                          natural_disasters_data, temp_change, disasters_change)
+        if select_temp and select_disasters and select_carbon:
+            # predicted value
+            future_value = computing.multiple_regression3(red_list_data, temperature_data,
+                                                          natural_disasters_data, carbon_data, temp_value, disasters_value, carbon_value)
+
+            # for graphing purposes
+            other_datasets = [('Carbon Concentration', carbon_data[1], carbon_value),
+                              ('Number of Natural Disasters', natural_disasters_data[1], disasters_value),
+                              ('Temperature', temperature_data[1], temp_value)]
+
         elif select_temp and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
-                                                          temperature_data, carbon_data, temp_change, carbon_change)
+                                                          temperature_data, carbon_data, temp_value, carbon_value)
+            other_datasets = [('Temperature', temperature_data[1]), ('Carbon Concentration', carbon_data[1])]
+
         elif select_disasters and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
                                                           carbon_data, natural_disasters_data,
-                                                          carbon_change, disasters_change)
-        else:
-            future_value = computing.multiple_regression3(red_list_data, temperature_data,
-                                                          natural_disasters_data, carbon_data, temp_change,
-                                                          disasters_change, carbon_change)
+                                                          carbon_value, disasters_value)
+            other_datasets = [('Carbon Concentration', carbon_data[1]),
+                              ('Number of Natural Disasters', natural_disasters_data[1])]
 
-        # predicted value
-        print(future_value)
+        else:
+            future_value = computing.multiple_regression2(red_list_data, temperature_data,
+                                                          natural_disasters_data, temp_change, disasters_change)
+            other_datasets = [('Temperature', temperature_data[1]),
+                              ('Number of Natural Disasters', natural_disasters_data[1])]
+
+        # create graph
+        graphing.plot_datasets(years, red_list_data[1], other_datasets, 0, 0, 0, 0, [], [future_value], 0, 0)
 
 
 def run_with_gui() -> None:
