@@ -4,7 +4,8 @@ import graphing
 from typing import *
 
 
-def run(selected: List[bool], interval_increases: List[float]) -> None:
+def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_change: float, disasters_change: float,
+        carbon_change: float) -> None:
     """ Performs calculations based on input and produces a graph
     """
     # Formatted data
@@ -12,25 +13,26 @@ def run(selected: List[bool], interval_increases: List[float]) -> None:
     formatting.add_red_list_species(red_list_data)
     red_list_data = formatting.dict_to_tuple_of_lists(red_list_data)
 
+    # no variable selected
+    if not any([select_temp, select_disasters, select_carbon]):
+        print('Nothing selected')
+
     # if one variable is changed, perform simple linear regression
-    if selected.count(True) == 1:
-        # temperature data
-        if selected[0]:
+    elif [select_temp, select_disasters, select_carbon].count(True) == 1:
+        if select_temp:
             temperature_data = formatting.csv_to_data("data//global_land_temperatures.csv")
             computing.average_temperature_data(temperature_data)
             comparison_data = formatting.dict_to_tuple_of_lists(temperature_data)
             computing.same_year(red_list_data, True)
-            change = interval_increases[0]
-        # natural disasters data
-        elif selected[1]:
+            change = temp_change
+        elif select_disasters:
             natural_disasters_data = formatting.csv_to_data("data//natural_disasters_data.csv")
             comparison_data = formatting.dict_to_tuple_of_lists(natural_disasters_data)
-            change = interval_increases[1]
-        # carbon dioxide data
-        else:
+            change = disasters_change
+        else:  # natural disasters data
             carbon_data = formatting.xlsx_to_data("data//carbon_dioxide_concentrations.xlsx")
             comparison_data = formatting.dict_to_tuple_of_lists(carbon_data)
-            change = interval_increases[2]
+            change = carbon_change
 
         # make the dataset years match
         comparison_data = computing.same_year(comparison_data, False)

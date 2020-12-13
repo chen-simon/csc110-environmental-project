@@ -19,7 +19,8 @@ def plot_datasets(year: List[int], red_list_y: List[float],
 
     # Add the given data
     make_graph1(fig, year, red_list_y, other_datasets, new_point_y, sigma)
-    make_graph2(fig, year, red_list_y, x_min, x_max, a, b, new_point_x, new_point_y, sigma)
+    if len(other_datasets) == 1:
+        make_graph2(fig, other_datasets[0][1], red_list_y, x_min, x_max, a, b, new_point_x, new_point_y, sigma)
 
     # Naming of axis and title
 
@@ -34,12 +35,8 @@ def plot_datasets(year: List[int], red_list_y: List[float],
 def make_graph1(fig: Figure, year: list, red_list_y: list,
                 other_datasets: List[Tuple[str, List[float]]], new_point_y: list,
                 sigma: float) -> None:
-
     """ Produces a graph where x axis is the years and y axis is the actual values of the datasets.
     """
-    fig.add_trace(go.Scatter(x=graph1_x_coords, y=y_coords,
-                             mode='lines+markers', name='data'), row=1, col=1)
-
     fig.add_trace(go.Scatter(x=year, y=red_list_y,
                              mode='lines+markers', name='Threatened Species'), row=1, col=1)
 

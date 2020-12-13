@@ -153,10 +153,8 @@ while is_running:
 
                 # Generate Button
                 elif event.ui_element == plot_button:
-                    if not any(selected):
-                        print('No change entered')
-                    else:
-                        run(selected, interval_increases)
+                    run(selected[0], selected[1], selected[2], interval_increases[0], interval_increases[1],
+                        interval_increases[2])
 
         manager.process_events(event)
 
