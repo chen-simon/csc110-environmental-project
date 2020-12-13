@@ -48,8 +48,9 @@ def make_graph1(fig: Figure, year: list, red_list_y: list,
                              error_y=dict(type='constant', value=sigma)), row=1, col=1)
 
 
+
 def make_graph2(fig: Figure, graph2_x_coords: list, y_coords: list, x_min: float, x_max: float,
-                a: float, b: float, new_point_x: list, new_point_y: list, sigma: float):
+                a: float, b: float, new_point_x: list, new_point_y: list, sigma: float, r_squared: float):
     """ Produces a graph where x axis is the selected dataset and the y axis is the red list data.
     """
     fig.add_trace(go.Scatter(x=graph2_x_coords, y=y_coords, mode='markers', name='Data'), row=1, col=2)
