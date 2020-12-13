@@ -5,7 +5,6 @@ import graphing
 from typing import *
 
 
-
 def run(selected: List[bool], interval_increases: List[float]) -> None:
     # Formatted data
     red_list_data = formatting.xlsx_to_data("data//red_list_data.xlsx")
