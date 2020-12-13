@@ -60,7 +60,7 @@ def csv_to_data(filename: str) -> Dict[int, Any]:
     return data_so_far
 
 
-def add_red_list_species(data: dict) -> None:
+def add_red_list_species(data: Dict[int, list]) -> None:
     """ Add the number of vertebrates, invertebrates, plants, and fungi & protists on the red list
     together for each year. This function mutates the input data.
     """
@@ -74,7 +74,7 @@ def dict_to_list_of_tuples(values: Dict[int, float]) -> List[Tuple[int, float]]:
     return [(key, values[key]) for key in values]
 
 
-def dict_to_tuple_of_lists(data:dict) -> tuple:
+def dict_to_tuple_of_lists(data: Dict[int, float]) -> Tuple[List[int], List[float]]:
     """ Return a tuple of two lists. The first list contains the keys and the second list contains the corresponding values
     """
     x_values = [key for key in data]
@@ -82,7 +82,7 @@ def dict_to_tuple_of_lists(data:dict) -> tuple:
     return (x_values, y_values)
 
 
-def tuple_to_dict(data: tuple) -> Dict:
+def tuple_to_dict(data: Tuple[List[int], List[float]]) -> Dict[int, float]:
     data_so_far = {}
     for i in range(0, len(data[0])):
         data_so_far[data[0][i]] = data[1][i]

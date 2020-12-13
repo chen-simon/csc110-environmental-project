@@ -40,18 +40,18 @@ def simple_linear_regression(points: tuple) -> tuple:
     return (a, b)
 
 
-def same_year_data(data1: dict, data2: dict, data3: dict, data4: dict) -> Tuple[Dict[int, float], Dict[int, float], Dict[int, float], Dict[int, float]]:
-    """ Create datasets so the have the same years.
-    """
-    data1_new, data2_new, data3_new, data4_new = {}, {}, {}, {}
-    for key in data1:
-        if key in data2 and key in data3 and key in data4:
-            data1_new[key] = data1[key]
-            data2_new[key] = data2[key]
-            data3_new[key] = data2[key]
-            data4_new[key] = data2[key]
+def same_year(data:tuple, temperature: bool):
+    data_so_far = ([], [])
+    for i in range(0, len(data[0])):
+        if data[0][i] > 1995 and data[0][i] != 1997 and data[0][i] != 1999 and data[0][i] != 2001 and data[0][i] != 2005:
+            data_so_far[0].append(data[0][i])
+            data_so_far[1].append(data[1][i])
 
-    return (data1_new, data2_new, data3_new, data4_new)
+    if temperature:
+        for i in range(0, 4):
+            data[0].pop()
+            data[1].pop()
+    return data_so_far
 
 
 def predict_future_value(a: int, b: int, data: list, change: float) -> float:
