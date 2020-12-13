@@ -15,7 +15,12 @@ def plot_datasets(year: List[int], red_list_y: List[float],
         The dictionaries are created by using the functions in formatting.py
     """
     # Create a blank figure
-    fig = make_subplots(rows=1, cols=2)
+    if len(other_datasets) == 1:
+        fig = make_subplots(rows=1, cols=2,
+                        subplot_titles=("Change in Red List and Temperature Over Time",
+                                        "Temperature vs. Number of Threatened Species"))
+    else:
+        fig = go.Figure()
 
     # Add the given data
     make_graph1(fig, year, red_list_y, other_datasets, new_point_y, sigma)
@@ -24,8 +29,7 @@ def plot_datasets(year: List[int], red_list_y: List[float],
                     x_min, x_max, a, b, new_point_x, new_point_y, sigma)
 
     # Naming of axis and title
-
-    fig.update_layout(title='R²',
+    fig.update_layout(title='Predicting Future Value - R squared = ' + str(r_squared),
                       xaxis_title='Year',
                       yaxis_title='Number of Threatened Species')
 
@@ -51,7 +55,7 @@ def make_graph1(fig: Figure, year: list, red_list_y: list,
 
 
 def make_graph2(fig: Figure, graph2_x_coords: list, y_coords: list, x_min: float, x_max: float,
-                a: float, b: float, new_point_x: list, new_point_y: list, sigma: float, r_squared: float):
+                a: float, b: float, new_point_x: list, new_point_y: list, sigma: float):
     """ Produces a graph where x axis is the selected dataset and the y axis is the red list data.
     """
     fig.add_trace(go.Scatter(x=graph2_x_coords, y=y_coords, mode='markers', name='Data'), row=1, col=2)
@@ -64,3 +68,5 @@ def make_graph2(fig: Figure, graph2_x_coords: list, y_coords: list, x_min: float
     fig.add_trace(go.Scatter(x=new_point_x, y=new_point_y, mode='markers', name='Prediction Interval',
                              error_y=dict(type='constant', value=sigma)), row=1, col=2)
 
+    fig.update_xaxes(title_text="Temperature", row=1, col=2)
+    fig.update_yaxes(title_text="Number of Threatened Species", row=1, col=2)
