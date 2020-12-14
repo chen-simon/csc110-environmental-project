@@ -15,6 +15,8 @@ pygame.init()
 
 def toggle_dataset(interval_increases: List[float], selected: List[int],
                    button, increase_box, dataset: int):
+    """ Toggles the dataset selected in the interface
+    """
     if not selected[dataset]:
         selected[dataset] = True
         button.select()
@@ -27,6 +29,8 @@ def toggle_dataset(interval_increases: List[float], selected: List[int],
 
 
 def change_interval(interval_increases: List[float], textbox, delta: float, dataset: int) -> None:
+    """ Changes the increase interval of the selected dataset by a given delta, including units
+    """
     units = ['°C', ' Disasters', ' ppm']
     interval_increases[dataset] += delta
     # Always round the Degrees Celsius
