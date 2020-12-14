@@ -9,6 +9,10 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
         carbon_change: float) -> None:
     """ Performs calculations based on input and produces a graph
     """
+    TEMP_DATA_LABEL = 'Temperature (°C)'
+    DISASTERS_DATA_LABEL = 'Number of Natural Disasters'
+    CARBON_DATA_LABEL = 'Carbon Concentration (ppm)'
+
     # no variable selected
     if not any([select_temp, select_disasters, select_carbon]):
         print('Nothing selected')
@@ -40,15 +44,15 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
         if select_temp:
             comparison_data = temperature_data
             change = temp_change
-            label = 'Temperature'
+            label = TEMP_DATA_LABEL
         elif select_disasters:
             comparison_data = natural_disasters_data
             change = disasters_change
-            label = 'Number of Natural Disasters'
+            label = DISASTERS_DATA_LABEL
         else:  # carbon concentration data
             comparison_data = carbon_data
             change = carbon_change
-            label = 'Carbon Dioxide Concentration'
+            label = CARBON_DATA_LABEL
 
         # all calculations for regression + graphing purposes
         dep_val = red_list_data[1]
@@ -81,27 +85,27 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
                                                           natural_disasters_data, carbon_data, temp_value, disasters_value, carbon_value)
 
             # for graphing purposes
-            other_datasets = [('Carbon Concentration', carbon_data[1], carbon_value),
-                              ('Number of Natural Disasters', natural_disasters_data[1], disasters_value),
-                              ('Temperature', temperature_data[1], temp_value)]
+            other_datasets = [(CARBON_DATA_LABEL, carbon_data[1], carbon_value),
+                              (DISASTERS_DATA_LABEL, natural_disasters_data[1], disasters_value),
+                              (TEMP_DATA_LABEL, temperature_data[1], temp_value)]
 
         elif select_temp and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
                                                           temperature_data, carbon_data, temp_value, carbon_value)
-            other_datasets = [('Temperature', temperature_data[1], temp_value), ('Carbon Concentration', carbon_data[1], carbon_value)]
+            other_datasets = [(TEMP_DATA_LABEL, temperature_data[1], temp_value), (CARBON_DATA_LABEL, carbon_data[1], carbon_value)]
 
         elif select_disasters and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
                                                           carbon_data, natural_disasters_data,
                                                           carbon_value, disasters_value)
-            other_datasets = [('Carbon Concentration', carbon_data[1], carbon_value),
-                              ('Number of Natural Disasters', natural_disasters_data[1], disasters_value)]
+            other_datasets = [(CARBON_DATA_LABEL, carbon_data[1], carbon_value),
+                              (DISASTERS_DATA_LABEL, natural_disasters_data[1], disasters_value)]
 
         else:
             future_value = computing.multiple_regression2(red_list_data, temperature_data,
-                                                          natural_disasters_data, temp_change, disasters_change)
-            other_datasets = [('Temperature', temperature_data[1], temp_value),
-                              ('Number of Natural Disasters', natural_disasters_data[1], disasters_value)]
+                                                          natural_disasters_data, temp_value, disasters_value)
+            other_datasets = [(TEMP_DATA_LABEL, temperature_data[1], temp_value),
+                              (DISASTERS_DATA_LABEL, natural_disasters_data[1], disasters_value)]
 
         # create graph
         graphing.plot_datasets(years, red_list_data[1], other_datasets, 0, 0, 0, 0, [], [future_value], 0, 0)
