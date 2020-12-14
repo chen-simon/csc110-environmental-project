@@ -1,23 +1,34 @@
+"""
+Main Module
+
+This module contains the functions that are needed to run the program from start to end. Call run_with_gui() to run the
+gui. Call run() to run the prediction by entering the appropriate parameters.
+
+This file is Copyright (c) 2020 Patricia Ding, Makayla Duffus, Simon Chen.
+"""
+from typing import List, Tuple
 import formatting
 import computing
 import graphing
 import interface
-from typing import *
+
+# constants
+TEMP_DATA_LABEL = 'Temperature (°C)'
+DISASTERS_DATA_LABEL = 'Number of Natural Disasters'
+CARBON_DATA_LABEL = 'Carbon Concentration (ppm)'
 
 
 def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_change: float, disasters_change: float,
         carbon_change: float) -> None:
-    """ Performs calculations based on input and produces a graph
+    """ Runs the prediction calculations. If one variable is changed, a simple linear regression and prediction
+    interval is calculated. If more than one variable is changed, a multiple linear regression is performed with
+    the sklearn library. The results will be plotted in a new window.
     """
-    TEMP_DATA_LABEL = 'Temperature (°C)'
-    DISASTERS_DATA_LABEL = 'Number of Natural Disasters'
-    CARBON_DATA_LABEL = 'Carbon Concentration (ppm)'
-
-    # no variable selected
+    # in case no variable is changed
     if not any([select_temp, select_disasters, select_carbon]):
         print('Nothing selected')
 
-    # Formatted data
+    # format datasets to usable data
     red_list_data = formatting.xlsx_to_data("data//red_list_data.xlsx")
     formatting.add_red_list_species(red_list_data)
 
@@ -54,35 +65,20 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
             change = carbon_change
             label = CARBON_DATA_LABEL
 
-        # all calculations for regression + graphing purposes
-        dep_val = red_list_data[1]
-        indep_val = comparison_data[1]
-        a, b = computing.simple_linear_regression((indep_val, dep_val))
-        r_squared = computing.calculate_r_squared(indep_val, dep_val, a, b)
-        future_value = computing.predict_future_value(a, b, indep_val, change)
-        residuals = computing.residuals((indep_val, dep_val), a, b)
-        standard_dev = computing.residual_standard_deviation(residuals)
-        sigma = computing.prediction_interval_sigma(standard_dev)
-
-        new_point_x = [indep_val[-1] + change]
-        new_point_y = [future_value]
-        xmax = (indep_val[-1] + change) + 0.1 * (indep_val[-1] + change - indep_val[0])
-        xmin = indep_val[0] - 0.1 * (indep_val[-1] - indep_val[0])
-        # temperature? - ignore for now -
-        # graph the data
-        graphing.plot_datasets(years, dep_val, [(label, indep_val, indep_val[-1] + change)], a, b, xmax, xmin, new_point_x, new_point_y,
-                               sigma, r_squared)
+        one_variable_changed(comparison_data, red_list_data, change, label)
 
     # for multiple regression
     else:
         carbon_value = carbon_data[1][-1] + carbon_change
         temp_value = temperature_data[1][-1] + temp_change
         disasters_value = natural_disasters_data[1][-1] + disasters_change
+
         # based on which variables user selected
         if select_temp and select_disasters and select_carbon:
             # predicted value
             future_value = computing.multiple_regression3(red_list_data, temperature_data,
-                                                          natural_disasters_data, carbon_data, temp_value, disasters_value, carbon_value)
+                                                          natural_disasters_data, carbon_data, temp_value,
+                                                          disasters_value, carbon_value)
 
             # for graphing purposes
             other_datasets = [(CARBON_DATA_LABEL, carbon_data[1], carbon_value),
@@ -92,7 +88,8 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
         elif select_temp and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
                                                           temperature_data, carbon_data, temp_value, carbon_value)
-            other_datasets = [(TEMP_DATA_LABEL, temperature_data[1], temp_value), (CARBON_DATA_LABEL, carbon_data[1], carbon_value)]
+            other_datasets = [(TEMP_DATA_LABEL, temperature_data[1], temp_value), (CARBON_DATA_LABEL,
+                                                                                   carbon_data[1], carbon_value)]
 
         elif select_disasters and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
@@ -112,6 +109,34 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
 
 
 def run_with_gui() -> None:
-    """ Runs with graphical interface
+    """ Runs with graphical interface.
     """
     interface.run_interface()
+
+
+def one_variable_changed(comparison_data: Tuple[List[int], List[float]], red_list_data: Tuple[List[int], List[float]],
+                         change: float, label: str) -> None:
+    """ Perform calculations and graphing operations for simple linear regression, where one variable has been changed.
+    """
+    # calculations
+    dep_val = red_list_data[1]
+    indep_val = comparison_data[1]
+    # simple linear regression
+    a, b = computing.simple_linear_regression((indep_val, dep_val))
+    r_squared = computing.calculate_r_squared(indep_val, dep_val, a, b)
+    # predicted value
+    future_value = computing.predict_future_value(a, b, indep_val, change)
+    # prediction interval
+    residuals = computing.residuals((indep_val, dep_val), a, b)
+    standard_dev = computing.residual_standard_deviation(residuals)
+    sigma = computing.prediction_interval_sigma(standard_dev)
+
+    # plotting purposes
+    new_point_x = [indep_val[-1] + change]
+    new_point_y = [future_value]
+    xmax = (indep_val[-1] + change) + 0.1 * (indep_val[-1] + change - indep_val[0])
+    xmin = indep_val[0] - 0.1 * (indep_val[-1] - indep_val[0])
+
+    # graph the data
+    graphing.plot_datasets(red_list_data[0], dep_val, [(label, indep_val, indep_val[-1] + change)], a, b, xmax, xmin,
+                           new_point_x, new_point_y, sigma, r_squared)

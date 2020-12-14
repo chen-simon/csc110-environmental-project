@@ -1,3 +1,11 @@
+"""
+Interface Module
+
+This module contains the functions that are needed to for the interface. The gui allows the user to adjust the
+variables for the prediction, then generate the graph.
+
+This file is Copyright (c) 2020 Patricia Ding, Makayla Duffus, Simon Chen.
+"""
 import pygame
 import pygame_gui
 from main import run
@@ -31,7 +39,7 @@ def change_interval(interval_increases: List[float], textbox, delta: float, data
 
 
 def run_interface() -> None:
-    """ Runs the graphical user interface
+    """ Runs the graphical user interface.
     """
     pygame.display.set_caption('Climate Grapher')
     window_surface = pygame.display.set_mode((450, 300))

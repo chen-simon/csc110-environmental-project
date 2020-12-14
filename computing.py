@@ -1,30 +1,38 @@
+"""
+Computing Module
+
+This module contains the functions that are needed to plot the data. The data is plotted with plotly.
+
+This file is Copyright (c) 2020 Patricia Ding, Makayla Duffus, Simon Chen.
+"""
+
 import math
-from typing import Tuple, List, Dict
+from typing import Dict, List, Tuple
 from sklearn.linear_model import LinearRegression
-import numpy
 import pandas
 
 
-def average_temperature_data(data: dict) -> None:
+def average_temperature_data(data: Dict[int, List]) -> None:
     """ Calculate average temperature during each year. This function mutates the input data.
 
     The dictionary changes from the form Dict[int, List[float]] to Dict[int, float]
     upon mutation.
+
+    >>> dataset = {1: [1, 2, 3], 2: [4, 5, 6]}
+    >>> average_temperature_data(dataset)
+    >>> dataset == {1: 2, 2: 5}
+    True
     """
     for key in data:
         data[key] = sum(data[key]) / len(data[key])
 
 
-def simple_linear_regression(points: tuple) -> tuple:
-    """Perform a linear regression on the given points.
+def simple_linear_regression(points: Tuple[List[float], List[float]]) -> Tuple[float, float]:
+    """Perform a simple linear regression on the given points. This function returns a pair of floats (a, b) such
+    that the line y = a + bx is the approximation of this data.
 
-    points is a list of pairs of floats: [(x_1, y_1), (x_2, y_2), ...]
-    This function returns a pair of floats (a, b) such that the line
-    y = a + bx is the approximation of this data.
-
-    You may ASSUME that:
-        - len(points) > 0
-        - each element of points is a tuple of two floats
+    >>> simple_linear_regression(([0, 1, 2, 3], [0, 1, 2, 3]))
+    (0.0, 1.0)
     """
 
     x_values = points[0]
@@ -41,20 +49,16 @@ def simple_linear_regression(points: tuple) -> tuple:
     return (a, b)
 
 
-def same_year(red_list_data: dict, temperature_data: dict, natural_disasters_data: dict, carbon_data: dict):
-    """ Return a dataset the matches the years of the red list data -- bad implementation will fix later
+def same_year(red_list_data: Dict[int, float], temperature_data: Dict[int, float],
+              natural_disasters_data: Dict[int, float], carbon_data: Dict[int, float]) -> Tuple[Dict[int, float],
+                                                                                                Dict[int, float],
+                                                                                                Dict[int, float],
+                                                                                                Dict[int, float]]:
+    """ Return a tuple of dictionaries that all contain the same years as keys
+
+    >>> same_year({2002: 2, 2000: 2}, {2004: 2, 2000: 3}, {2001: 2, 2000: 4}, {2007: 2, 2000: 5})
+    ({2000: 2}, {2000: 3}, {2000: 4}, {2000: 5})
     """
-    # data_so_far = ([], [])
-    # for i in range(0, len(data[0])):
-    #     if data[0][i] > 1995 and data[0][i] != 1997 and data[0][i] != 1999 and data[0][i] != 2001 and data[0][i] != 2005:
-    #         data_so_far[0].append(data[0][i])
-    #         data_so_far[1].append(data[1][i])
-    #
-    # if temperature:
-    #     for i in range(0, 4):
-    #         data[0].pop()
-    #         data[1].pop()
-    # return data_so_far
     new_red_list, new_temp_data, new_disasters_data, new_carbon_data = {}, {}, {}, {}
 
     for year in red_list_data:
@@ -64,23 +68,17 @@ def same_year(red_list_data: dict, temperature_data: dict, natural_disasters_dat
             new_disasters_data[year] = natural_disasters_data[year]
             new_carbon_data[year] = carbon_data[year]
 
-    return new_red_list, new_temp_data, new_disasters_data, new_carbon_data
+    return (new_red_list, new_temp_data, new_disasters_data, new_carbon_data)
 
 
 def predict_future_value(a: int, b: int, data: list, change: float) -> float:
-    """ Return the predicted value based on the simple linear regression
+    """ Return the predicted value based on the simple linear regression.
     """
     return a + b *(data[-1] + change)
 
 
 def calculate_r_squared(x_values: list, y_values: list, a: float, b: float) -> float:
     """Return the R squared value when the given points are modelled as the line y = a + bx.
-
-    points is a list of pairs of numbers: [(x_1, y_1), (x_2, y_2), ...]
-
-    Assume that:
-        - points is not empty and contains tuples
-        - each element of points is a tuple containing two floats
     """
     y_average = sum(y_values) / len(y_values)
 
@@ -116,7 +114,7 @@ def prediction_interval_sigma(standard_dev: float) -> float:
 
 
 def multiple_regression2(red_list_data: tuple, dataset1: tuple, dataset2: tuple, value1: float, value2: float) -> float:
-    """ Return the prediction of a multiple linear regression with two variables
+    """ Return the prediction of a multiple linear regression with two variables.
     """
     y = pandas.DataFrame(red_list_data[1])
     x = pandas.DataFrame(list(zip(dataset1[1], dataset2[1])))
@@ -128,7 +126,7 @@ def multiple_regression2(red_list_data: tuple, dataset1: tuple, dataset2: tuple,
 
 def multiple_regression3(red_list_data: tuple, dataset1: tuple, dataset2: tuple, dataset3: tuple, value1: float,
                          value2: float, value3: float) -> float:
-    """ Return the prediction of a multiple linear regression with three variables
+    """ Return the prediction of a multiple linear regression with three variables.
     """
     y = pandas.DataFrame(red_list_data[1])
     x = pandas.DataFrame(list(zip(dataset1[1], dataset2[1], dataset3[1])))
@@ -136,3 +134,9 @@ def multiple_regression3(red_list_data: tuple, dataset1: tuple, dataset2: tuple,
     linear_regression.fit(x, y)
     y_pred = linear_regression.predict([[value1, value2, value3]])
     return float(y_pred)
+
+
+if __name__ == '__main__':
+    import doctest
+
+    doctest.testmod()

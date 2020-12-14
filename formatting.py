@@ -1,15 +1,24 @@
+"""
+Formatting Module
+
+This module contains the functions that format and reformat the datasets. There are four datasets that require formatting:
+1. red_list_data.xlsx
+2. global_land_temperatures.csv
+3. natural_disasters_data.csv
+4. carbon_dioxide_concentrations.xlsx
+
+These datasets are contained in the folder titled 'data'.
+
+This file is Copyright (c) 2020 Patricia Ding, Makayla Duffus, Simon Chen.
+"""
 import xlrd
 import csv
 from typing import Tuple, List, Dict, Any
 
-# Usable data
-#
-# This is in the form of Tuple[datetime.datetime, List[Any]]
-# (start_year, [value1, value2, value3, value4])
-
 
 def xlsx_to_data(filename: str) -> Dict[int, Any]:
-    """ Convert the xlsx file to usable data.
+    """ Returns a mapping of the years to the actual data values. The input should be an xlsx file.
+    This function opens the second worksheet of the file and starts reading the file from the 4th row.
     """
     # opening workbook and accessing the 2nd sheet
     workbook = xlrd.open_workbook(filename)
@@ -38,12 +47,14 @@ def xlsx_to_data(filename: str) -> Dict[int, Any]:
 
 
 def csv_to_data(filename: str) -> Dict[int, Any]:
-    """ Convert the csv file to usable data.
+    """ Returns a mapping of the years to the actual data values. The input should be an csv file.
+    This function skips the first row of the dataset.
     """
     with open(filename) as file:
         reader = csv.reader(file)
         # skip the first line
         next(reader)
+
         # ACCUMULATOR: stores the data extracted from the csv file
         data_so_far = {}
         for row in reader:
@@ -63,6 +74,11 @@ def csv_to_data(filename: str) -> Dict[int, Any]:
 def add_red_list_species(data: Dict[int, list]) -> None:
     """ Add the number of vertebrates, invertebrates, plants, and fungi & protists on the red list
     together for each year. This function mutates the input data.
+
+    >>> dataset = {2001: [1, 2, 3], 2002: [3, 4, 5]}
+    >>> add_red_list_species(dataset)
+    >>> dataset == {2001: 6, 2002: 12}
+    True
     """
     for key in data:
         data[key] = sum(data[key])
@@ -71,6 +87,9 @@ def add_red_list_species(data: Dict[int, list]) -> None:
 def dict_to_tuple_of_lists(data: Dict[int, float]) -> Tuple[List[int], List[float]]:
     """ Returns a tuple of two lists. The first list contains the years (the keys of the input dictionary) and the
     second list contains the actual data values (the corresponding values of the input dictionary)
+
+    >>> dict_to_tuple_of_lists({1: 2, 3: 4})
+    ([1, 3], [2, 4])
     """
     x_values = [key for key in data]
     y_values = [data[key] for key in data]
@@ -79,9 +98,17 @@ def dict_to_tuple_of_lists(data: Dict[int, float]) -> Tuple[List[int], List[floa
 
 def tuple_to_dict(data: Tuple[List[int], List[float]]) -> Dict[int, float]:
     """ Return a mapping of years to the corresponding value.
+
+    >>> tuple_to_dict(([1, 2, 3], [4, 5, 6]))
+    {1: 4, 2: 5, 3: 6}
     """
     data_so_far = {}
     for i in range(0, len(data[0])):
         data_so_far[data[0][i]] = data[1][i]
 
     return data_so_far
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
