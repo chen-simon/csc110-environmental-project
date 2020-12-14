@@ -27,14 +27,14 @@ def plot_datasets(year: List[int], red_list_y: List[float],
                                             str(other_datasets[0][0]) + " vs. Number of Threatened Species"))
         fig.update_layout(title='Predicting Future Value - R squared = ' + str(r_squared),
                           xaxis_title='Year',
-                          yaxis_title='Number of Threatened Species')
+                          yaxis_title='Data')
 
     # create a blank figure with one graph
     else:
         fig = make_subplots(rows=1, cols=1)
         fig.update_layout(title='Predicting Future Value',
                           xaxis_title='Year',
-                          yaxis_title='Data Value')
+                          yaxis_title='Data')
 
     # Add data to graph1
     make_graph1(fig, year, red_list_y, other_datasets, new_point_y, sigma)
