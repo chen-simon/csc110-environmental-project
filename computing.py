@@ -41,20 +41,30 @@ def simple_linear_regression(points: tuple) -> tuple:
     return (a, b)
 
 
-def same_year(data:tuple, temperature: bool):
+def same_year(red_list_data: dict, temperature_data: dict, natural_disasters_data: dict, carbon_data: dict):
     """ Return a dataset the matches the years of the red list data -- bad implementation will fix later
     """
-    data_so_far = ([], [])
-    for i in range(0, len(data[0])):
-        if data[0][i] > 1995 and data[0][i] != 1997 and data[0][i] != 1999 and data[0][i] != 2001 and data[0][i] != 2005:
-            data_so_far[0].append(data[0][i])
-            data_so_far[1].append(data[1][i])
+    # data_so_far = ([], [])
+    # for i in range(0, len(data[0])):
+    #     if data[0][i] > 1995 and data[0][i] != 1997 and data[0][i] != 1999 and data[0][i] != 2001 and data[0][i] != 2005:
+    #         data_so_far[0].append(data[0][i])
+    #         data_so_far[1].append(data[1][i])
+    #
+    # if temperature:
+    #     for i in range(0, 4):
+    #         data[0].pop()
+    #         data[1].pop()
+    # return data_so_far
+    new_red_list, new_temp_data, new_disasters_data, new_carbon_data = {}, {}, {}, {}
 
-    if temperature:
-        for i in range(0, 4):
-            data[0].pop()
-            data[1].pop()
-    return data_so_far
+    for year in red_list_data:
+        if year in temperature_data and year in natural_disasters_data and year in carbon_data:
+            new_red_list[year] = red_list_data[year]
+            new_temp_data[year] = temperature_data[year]
+            new_disasters_data[year] = natural_disasters_data[year]
+            new_carbon_data[year] = carbon_data[year]
+
+    return new_red_list, new_temp_data, new_disasters_data, new_carbon_data
 
 
 def predict_future_value(a: int, b: int, data: list, change: float) -> float:
@@ -105,13 +115,24 @@ def prediction_interval_sigma(standard_dev: float) -> float:
     return standard_dev * 1.28
 
 
-def multiple_regression(red_list_data: tuple, temp: tuple, carbon: tuple, natural: tuple):
+def multiple_regression2(red_list_data: tuple, dataset1: tuple, dataset2: tuple, value1: float, value2: float) -> float:
+    """ Return the prediction of a multiple linear regression with two variables
+    """
+    y = pandas.DataFrame(red_list_data[1])
+    x = pandas.DataFrame(list(zip(dataset1[1], dataset2[1])))
+    linear_regression = LinearRegression()
+    linear_regression.fit(x, y)
+    y_pred = linear_regression.predict([[value1, value2]])
+    return float(y_pred)
+
+
+def multiple_regression3(red_list_data: tuple, dataset1: tuple, dataset2: tuple, dataset3: tuple, value1: float,
+                         value2: float, value3: float) -> float:
     """ Return the prediction of a multiple linear regression with three variables
     """
     y = pandas.DataFrame(red_list_data[1])
-    x = pandas.DataFrame(list(zip(temp[1], carbon[1], natural[1])))
-    print(x)
+    x = pandas.DataFrame(list(zip(dataset1[1], dataset2[1], dataset3[1])))
     linear_regression = LinearRegression()
     linear_regression.fit(x, y)
-    y_pred = linear_regression.predict([[9.9, 330, 380]])
-    print(y_pred)
+    y_pred = linear_regression.predict([[value1, value2, value3]])
+    return float(y_pred)
