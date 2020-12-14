@@ -87,20 +87,20 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
         elif select_temp and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
                                                           temperature_data, carbon_data, temp_value, carbon_value)
-            other_datasets = [('Temperature', temperature_data[1]), ('Carbon Concentration', carbon_data[1])]
+            other_datasets = [('Temperature', temperature_data[1], temp_value), ('Carbon Concentration', carbon_data[1], carbon_value)]
 
         elif select_disasters and select_carbon:
             future_value = computing.multiple_regression2(red_list_data,
                                                           carbon_data, natural_disasters_data,
                                                           carbon_value, disasters_value)
-            other_datasets = [('Carbon Concentration', carbon_data[1]),
-                              ('Number of Natural Disasters', natural_disasters_data[1])]
+            other_datasets = [('Carbon Concentration', carbon_data[1], carbon_value),
+                              ('Number of Natural Disasters', natural_disasters_data[1], disasters_value)]
 
         else:
             future_value = computing.multiple_regression2(red_list_data, temperature_data,
                                                           natural_disasters_data, temp_change, disasters_change)
-            other_datasets = [('Temperature', temperature_data[1]),
-                              ('Number of Natural Disasters', natural_disasters_data[1])]
+            other_datasets = [('Temperature', temperature_data[1], temp_value),
+                              ('Number of Natural Disasters', natural_disasters_data[1], disasters_value)]
 
         # create graph
         graphing.plot_datasets(years, red_list_data[1], other_datasets, 0, 0, 0, 0, [], [future_value], 0, 0)
