@@ -48,7 +48,6 @@ def make_graph1(fig: Figure, year: list, red_list_y: list,
                              mode='lines+markers', name='Threatened Species'), row=1, col=1)
 
     for dataset in other_datasets:
-        print(dataset)
         fig.add_trace(go.Scatter(x=year, y=dataset[1],
                       mode='lines+markers', name=dataset[0]), row=1, col=1)
         fig.add_trace(go.Scatter(x=[2020], y=[dataset[2]], mode='markers', name='Future' + dataset[0]), row=1, col=1)

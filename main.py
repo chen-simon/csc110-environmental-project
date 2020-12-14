@@ -1,6 +1,7 @@
 import formatting
 import computing
 import graphing
+import interface
 from typing import *
 
 
@@ -109,4 +110,4 @@ def run(select_temp: bool, select_disasters: bool, select_carbon: bool, temp_cha
 def run_with_gui() -> None:
     """ Runs with graphical interface
     """
-    import interface
+    interface.run_interface()
