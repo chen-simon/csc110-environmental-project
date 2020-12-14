@@ -5,7 +5,6 @@ This module contains the functions that are needed to plot the data. The data is
 
 This file is Copyright (c) 2020 Patricia Ding, Makayla Duffus, Simon Chen.
 """
-
 import math
 from typing import Dict, List, Tuple
 from sklearn.linear_model import LinearRegression
@@ -71,13 +70,13 @@ def same_year(red_list_data: Dict[int, float], temperature_data: Dict[int, float
     return (new_red_list, new_temp_data, new_disasters_data, new_carbon_data)
 
 
-def predict_future_value(a: int, b: int, data: list, change: float) -> float:
+def predict_future_value(a: float, b: float, data: List[float], change: float) -> float:
     """ Return the predicted value based on the simple linear regression.
     """
-    return a + b *(data[-1] + change)
+    return a + b * (data[-1] + change)
 
 
-def calculate_r_squared(x_values: list, y_values: list, a: float, b: float) -> float:
+def calculate_r_squared(x_values: List[float], y_values: List[float], a: float, b: float) -> float:
     """Return the R squared value when the given points are modelled as the line y = a + bx.
     """
     y_average = sum(y_values) / len(y_values)
@@ -88,7 +87,7 @@ def calculate_r_squared(x_values: list, y_values: list, a: float, b: float) -> f
     return 1 - s_res / s_tot
 
 
-def residuals(data: tuple, a: float, b: float) -> List[int]:
+def residuals(data: Tuple[List[float], List[float]], a: float, b: float) -> List[float]:
     """ Return the residual values of the linear regression.
     """
     nums_so_far = []
@@ -99,7 +98,7 @@ def residuals(data: tuple, a: float, b: float) -> List[int]:
     return nums_so_far
 
 
-def residual_standard_deviation(residual_list: list):
+def residual_standard_deviation(residual_list: List[float]):
     """ Return the standard deviation of the residual values.
     """
     squared_residuals = [residual ** 2 for residual in residual_list]
@@ -113,7 +112,8 @@ def prediction_interval_sigma(standard_dev: float) -> float:
     return standard_dev * 1.28
 
 
-def multiple_regression2(red_list_data: tuple, dataset1: tuple, dataset2: tuple, value1: float, value2: float) -> float:
+def multiple_regression2(red_list_data: Tuple[List[float], List[float]], dataset1: Tuple[List[float], List[float]],
+                         dataset2: Tuple[List[float], List[float]], value1: float, value2: float) -> float:
     """ Return the prediction of a multiple linear regression with two variables.
     """
     y = pandas.DataFrame(red_list_data[1])
@@ -124,8 +124,9 @@ def multiple_regression2(red_list_data: tuple, dataset1: tuple, dataset2: tuple,
     return float(y_pred)
 
 
-def multiple_regression3(red_list_data: tuple, dataset1: tuple, dataset2: tuple, dataset3: tuple, value1: float,
-                         value2: float, value3: float) -> float:
+def multiple_regression3(red_list_data: Tuple[List[float], List[float]], dataset1: Tuple[List[float], List[float]],
+                         dataset2: [List[float], List[float]], dataset3: tuple, value1: float, value2: float,
+                         value3: float) -> float:
     """ Return the prediction of a multiple linear regression with three variables.
     """
     y = pandas.DataFrame(red_list_data[1])
