@@ -8,7 +8,7 @@ csv
 plotly
 
 # ML
-sklearn
+scikit-learn
 pandas
 
 # GUI
